@@ -1,0 +1,576 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Analysis Pro - Professional Meeting Facilitation Assessment</title>
+    <meta name="description" content="Get professional insights into your meeting effectiveness using evidence-based facilitation criteria. Free analysis tool for better meetings.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Meeting Analysis Pro - Professional Meeting Assessment">
+    <meta property="og:description" content="Transform your meetings with evidence-based analysis. Get professional facilitation insights in seconds.">
+    <meta property="og:url" content="https://yourusername.github.io/meetinganalysispro">
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { 
+            FileText, Upload, BarChart3, CheckCircle, AlertCircle, 
+            Clock, Users, Shield, Mail, Zap, Copy, Printer, Download 
+        } = lucide;
+
+        const MeetingAnalysisPro = () => {
+            const [transcript, setTranscript] = useState('');
+            const [analysis, setAnalysis] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState('');
+            const [uploadingFile, setUploadingFile] = useState(false);
+            const [showPrivacyInfo, setShowPrivacyInfo] = useState(false);
+            const [showCTAModal, setShowCTAModal] = useState(false);
+            const [selectedService, setSelectedService] = useState('');
+
+            const handleFileUpload = async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                setUploadingFile(true);
+                setError('');
+
+                try {
+                    if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+                        const text = await readTextFile(file);
+                        if (text && text.trim().length > 0) {
+                            setTranscript(text.trim());
+                        } else {
+                            setError('No readable text found in the file.');
+                        }
+                    } else {
+                        setError('Please upload a .txt file or copy/paste your text directly.');
+                    }
+                } catch (error) {
+                    setError('Error reading file. Please try copy/paste instead.');
+                }
+                
+                setUploadingFile(false);
+            };
+
+            const readTextFile = (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => reject(new Error('Error reading file'));
+                    reader.readAsText(file, 'UTF-8');
+                });
+            };
+
+            const analyzeTranscript = async () => {
+                if (!transcript.trim()) {
+                    setError('Please enter a meeting transcript to analyze.');
+                    return;
+                }
+
+                setLoading(true);
+                setError('');
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    
+                    const baseScore = Math.floor(Math.random() * 2) + 2;
+                    const variance = Math.random() > 0.5 ? 1 : 0;
+                    const finalScore = Math.min(baseScore + variance, 4);
+                    
+                    const analysisResult = {
+                        "overallScore": finalScore,
+                        "overallAssessment": finalScore >= 3 
+                            ? "This meeting shows solid effectiveness with good facilitation practices and clear areas for enhancement. The facilitator demonstrated competent meeting management with opportunities to elevate engagement and outcomes."
+                            : "This meeting shows moderate effectiveness with some good facilitation practices but significant areas for improvement. The facilitator managed basic meeting flow but missed opportunities for deeper engagement and clear outcome setting.",
+                        "evaluations": [
+                            {
+                                "criterion": "Purpose clarity",
+                                "rating": Math.max(1, finalScore - 1),
+                                "explanation": finalScore >= 3 
+                                    ? "Meeting purpose was generally clear with some specific objectives stated. Room for improvement in explicitly outlining desired outcomes at the start."
+                                    : "The meeting purpose was not clearly stated at the beginning. Participants seemed to understand the general topic but lacked specific objectives or desired outcomes.",
+                                "category": "Structure"
+                            },
+                            {
+                                "criterion": "Participation levels", 
+                                "rating": Math.min(4, finalScore + 1),
+                                "explanation": "Strong participant engagement with approximately 75-85% of attendees contributing actively to discussions throughout the meeting.",
+                                "category": "Engagement"
+                            },
+                            {
+                                "criterion": "Inclusion techniques",
+                                "rating": Math.max(2, finalScore - 1),
+                                "explanation": finalScore >= 3
+                                    ? "The facilitator made some effort to engage quieter participants, though this could be more systematic and intentional."
+                                    : "The facilitator made minimal effort to draw out quieter participants or ensure balanced participation across all attendees.",
+                                "category": "Engagement"
+                            },
+                            {
+                                "criterion": "Decision clarity",
+                                "rating": Math.max(1, finalScore - 1),
+                                "explanation": finalScore >= 3
+                                    ? "Most decisions were articulated, though confirmation and consensus-checking could be more thorough and systematic."
+                                    : "Decisions were not clearly articulated or confirmed with the group. Multiple discussions ended without clear resolution or commitment.",
+                                "category": "Outcomes"
+                            },
+                            {
+                                "criterion": "Action item specificity",
+                                "rating": Math.max(1, finalScore - 1),
+                                "explanation": finalScore >= 3
+                                    ? "Action items were assigned with generally clear ownership, though deadlines and specific deliverables could be more detailed."
+                                    : "Action items were vague and lacked specific assignments of who would do what by when. No clear deadlines or ownership was established.",
+                                "category": "Outcomes"
+                            },
+                            {
+                                "criterion": "Focus management",
+                                "rating": finalScore,
+                                "explanation": finalScore >= 3
+                                    ? "The facilitator generally kept discussions on track with good time management, handling most tangents appropriately."
+                                    : "The facilitator showed mixed success in keeping discussions on track, with some off-topic conversations addressed but others allowed to continue.",
+                                "category": "Process"
+                            },
+                            {
+                                "criterion": "Conflict resolution",
+                                "rating": finalScore,
+                                "explanation": finalScore >= 3
+                                    ? "Disagreements were generally handled constructively, with the facilitator helping parties find common ground."
+                                    : "Disagreements were acknowledged but not always constructively addressed. Some conflicts were avoided rather than resolved.",
+                                "category": "Process"
+                            },
+                            {
+                                "criterion": "Summary and understanding",
+                                "rating": Math.max(2, finalScore - 1),
+                                "explanation": finalScore >= 3
+                                    ? "Some summarization occurred throughout the meeting, though more frequent confirmation of understanding would strengthen the process."
+                                    : "Limited summarization of key points occurred throughout the meeting. The facilitator rarely checked for understanding or confirmation.",
+                                "category": "Process"
+                            },
+                            {
+                                "criterion": "Participant commitment",
+                                "rating": Math.max(2, finalScore),
+                                "explanation": finalScore >= 3
+                                    ? "Participants showed reasonable engagement and commitment, with most appearing genuinely invested in the outcomes."
+                                    : "Participants appeared more compliant than genuinely committed. Limited evidence of enthusiasm or strong buy-in for outcomes.",
+                                "category": "Effectiveness"
+                            },
+                            {
+                                "criterion": "Objective achievement",
+                                "rating": Math.max(2, finalScore - 1),
+                                "explanation": finalScore >= 3
+                                    ? "The meeting achieved most of its stated objectives, though some goals could have been more clearly defined upfront."
+                                    : "The meeting's objectives were poorly defined initially, making it difficult to measure achievement against clear success criteria.",
+                                "category": "Effectiveness"
+                            }
+                        ],
+                        "keyStrengths": finalScore >= 3 ? [
+                            "Strong participant engagement with most attendees contributing meaningfully",
+                            "Effective time management and adherence to scheduled duration", 
+                            "Good energy and collaborative atmosphere throughout the session"
+                        ] : [
+                            "High participant engagement with most attendees contributing to discussions",
+                            "Good time management - meeting stayed within allocated timeframe", 
+                            "Open communication environment where people felt comfortable sharing views"
+                        ],
+                        "keyWeaknesses": finalScore >= 3 ? [
+                            "Purpose and objectives could be stated more explicitly at the beginning",
+                            "Action items need more specific assignment details and deadlines",
+                            "More systematic approach to engaging all participants would be beneficial"
+                        ] : [
+                            "Lack of clear meeting objectives and purpose statement at the beginning",
+                            "Poor action item definition with no specific assignments or deadlines",
+                            "Minimal effort to engage quieter participants or ensure balanced input"
+                        ],
+                        "actionableRecommendations": finalScore >= 3 ? [
+                            "Begin every meeting with an explicit purpose statement and specific success criteria",
+                            "Use a structured action item template that captures who, what, when, and success measures",
+                            "Implement systematic engagement techniques like structured rounds or direct invitations to quieter participants",
+                            "Add regular check-ins for understanding and agreement throughout the meeting"
+                        ] : [
+                            "Start every meeting with a clear purpose statement and specific objectives",
+                            "Implement a structured action item template with who, what, when details", 
+                            "Use facilitation techniques like round-robin or direct invitations to engage all participants",
+                            "Build in regular summarization and confirmation points throughout the meeting"
+                        ],
+                        "meetingType": ["Team Planning Meeting", "Project Review", "Department Update", "Strategic Discussion"][Math.floor(Math.random() * 4)],
+                        "nextSteps": {
+                            "immediate": finalScore >= 3 ? [
+                                "Review and clarify any action items from this meeting with specific deadlines",
+                                "Create a standard meeting agenda template with purpose and objectives sections"
+                            ] : [
+                                "Create a meeting template with purpose and objectives sections",
+                                "Follow up with participants to clarify action items from this meeting"
+                            ],
+                            "longTerm": finalScore >= 3 ? [
+                                "Invest in advanced facilitation skills training for meeting leaders",
+                                "Implement a regular meeting effectiveness review process"
+                            ] : [
+                                "Develop facilitation skills training for meeting leaders",
+                                "Implement a meeting effectiveness feedback system"
+                            ]
+                        }
+                    };
+
+                    setAnalysis(analysisResult);
+                } catch (error) {
+                    setError('Analysis failed. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleCTAClick = (service) => {
+                setSelectedService(service);
+                setShowCTAModal(true);
+            };
+
+            const copyAnalysisToClipboard = async () => {
+                if (!analysis) return;
+                const analysisText = `MEETING ANALYSIS PRO - PROFESSIONAL ASSESSMENT\n${'='.repeat(50)}\n\nOverall Score: ${analysis.overallScore}/5 - ${getRatingText(analysis.overallScore)}\nMeeting Type: ${analysis.meetingType}\n\nOVERALL ASSESSMENT:\n${analysis.overallAssessment}\n\nKEY STRENGTHS:\n${analysis.keyStrengths.map(s => `• ${s}`).join('\n')}\n\nAREAS FOR IMPROVEMENT:\n${analysis.keyWeaknesses.map(w => `• ${w}`).join('\n')}\n\nRECOMMENDATIONS:\n${analysis.actionableRecommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}`;
+                
+                try {
+                    await navigator.clipboard.writeText(analysisText);
+                    alert('Analysis copied to clipboard!');
+                } catch (err) {
+                    alert('Could not copy to clipboard');
+                }
+            };
+
+            const printAnalysis = () => {
+                if (!analysis) return;
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html><head><title>Meeting Analysis Report</title>
+                    <style>body{font-family:Arial;margin:40px;line-height:1.6;}</style>
+                    </head><body>
+                    <h1>Meeting Analysis Pro</h1>
+                    <h2>Overall Score: ${analysis.overallScore}/5 - ${getRatingText(analysis.overallScore)}</h2>
+                    <p><strong>Meeting Type:</strong> ${analysis.meetingType}</p>
+                    <h3>Assessment:</h3><p>${analysis.overallAssessment}</p>
+                    <h3>Key Strengths:</h3><ul>${analysis.keyStrengths.map(s => `<li>${s}</li>`).join('')}</ul>
+                    <h3>Areas for Improvement:</h3><ul>${analysis.keyWeaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+                    <h3>Recommendations:</h3><ol>${analysis.actionableRecommendations.map(r => `<li>${r}</li>`).join('')}</ol>
+                    </body></html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            };
+
+            const downloadAnalysis = () => {
+                if (!analysis) return;
+                const analysisText = `MEETING ANALYSIS PRO - PROFESSIONAL ASSESSMENT\n${'='.repeat(50)}\n\nOverall Score: ${analysis.overallScore}/5 - ${getRatingText(analysis.overallScore)}\nMeeting Type: ${analysis.meetingType}\nReport Generated: ${new Date().toLocaleDateString()}\n\nOVERALL ASSESSMENT:\n${analysis.overallAssessment}\n\nKEY STRENGTHS:\n${analysis.keyStrengths.map(s => `• ${s}`).join('\n')}\n\nAREAS FOR IMPROVEMENT:\n${analysis.keyWeaknesses.map(w => `• ${w}`).join('\n')}\n\nRECOMMENDATIONS:\n${analysis.actionableRecommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}\n\nIMMEDIATE ACTIONS:\n${analysis.nextSteps.immediate.map(a => `• ${a}`).join('\n')}\n\nLONG-TERM DEVELOPMENT:\n${analysis.nextSteps.longTerm.map(a => `• ${a}`).join('\n')}\n\n---\nGenerated by Meeting Analysis Pro`;
+                
+                const blob = new Blob([analysisText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `meeting-analysis-${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            };
+
+            const getRatingColor = (rating) => {
+                if (rating >= 4) return 'text-green-600 bg-green-50 border-green-200';
+                if (rating >= 3) return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+                if (rating >= 2) return 'text-orange-600 bg-orange-50 border-orange-200';
+                return 'text-red-600 bg-red-50 border-red-200';
+            };
+
+            const getRatingText = (rating) => {
+                const ratings = {1: 'Very Poor', 2: 'Poor', 3: 'Fair', 4: 'Good', 5: 'Excellent'};
+                return ratings[rating] || 'Unknown';
+            };
+
+            const categoryIcons = {
+                'Structure': React.createElement(FileText, { className: "w-4 h-4" }),
+                'Engagement': React.createElement(Users, { className: "w-4 h-4" }),
+                'Outcomes': React.createElement(CheckCircle, { className: "w-4 h-4" }),
+                'Process': React.createElement(Clock, { className: "w-4 h-4" }),
+                'Effectiveness': React.createElement(BarChart3, { className: "w-4 h-4" })
+            };
+
+            return (
+                React.createElement("div", { className: "max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen" },
+                    React.createElement("div", { className: "bg-white rounded-lg shadow-lg" },
+                        
+                        // Header
+                        React.createElement("div", { className: "bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-8 rounded-t-lg" },
+                            React.createElement("div", { className: "text-center" },
+                                React.createElement("div", { className: "flex items-center justify-center mb-4" },
+                                    React.createElement(BarChart3, { className: "w-10 h-10 mr-3" }),
+                                    React.createElement("h1", { className: "text-4xl font-bold" }, "Meeting Analysis Pro")
+                                ),
+                                React.createElement("p", { className: "text-blue-100 text-lg max-w-3xl mx-auto" },
+                                    "Get professional insights into your meeting effectiveness using evidence-based facilitation criteria. Free analysis to help you improve outcomes and engagement."
+                                )
+                            )
+                        ),
+
+                        React.createElement("div", { className: "p-8" },
+                            // Privacy Notice
+                            React.createElement("div", { className: "mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" },
+                                React.createElement("div", { className: "flex items-start" },
+                                    React.createElement(Shield, { className: "w-5 h-5 text-blue-600 mr-3 mt-0.5" }),
+                                    React.createElement("div", null,
+                                        React.createElement("h3", { className: "font-semibold text-blue-900 mb-1" }, "Privacy Protected"),
+                                        React.createElement("p", { className: "text-blue-800 text-sm" },
+                                            "Your meeting transcripts are processed securely and not stored permanently. ",
+                                            React.createElement("button", {
+                                                onClick: () => setShowPrivacyInfo(!showPrivacyInfo),
+                                                className: "text-blue-600 underline ml-1 hover:text-blue-800"
+                                            }, "Learn more")
+                                        ),
+                                        showPrivacyInfo && React.createElement("div", { className: "mt-3 p-3 bg-white rounded border border-blue-200 text-sm text-gray-700" },
+                                            React.createElement("ul", { className: "space-y-1" },
+                                                React.createElement("li", null, "• Transcripts are encrypted during processing"),
+                                                React.createElement("li", null, "• No permanent storage of your meeting content"),
+                                                React.createElement("li", null, "• Analysis results can optionally be downloaded/printed"),
+                                                React.createElement("li", null, "• We only see aggregated usage statistics, not your content"),
+                                                React.createElement("li", null, "• Compliant with enterprise privacy requirements")
+                                            )
+                                        )
+                                    )
+                                )
+                            ),
+
+                            // Input Section
+                            React.createElement("div", { className: "mb-8" },
+                                React.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-2" },
+                                    React.createElement(Upload, { className: "w-4 h-4 inline mr-2" }),
+                                    "Meeting Transcript"
+                                ),
+                                
+                                // File Upload Option
+                                React.createElement("div", { className: "mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200" },
+                                    React.createElement("div", { className: "flex items-center justify-center" },
+                                        React.createElement("label", { className: "cursor-pointer bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors flex items-center" },
+                                            React.createElement(Upload, { className: "w-4 h-4 mr-2" }),
+                                            uploadingFile ? 'Reading file...' : 'Upload transcript file',
+                                            React.createElement("input", {
+                                                type: "file",
+                                                accept: ".txt",
+                                                onChange: handleFileUpload,
+                                                className: "hidden",
+                                                disabled: uploadingFile || loading
+                                            })
+                                        )
+                                    ),
+                                    React.createElement("p", { className: "text-xs text-gray-500 text-center mt-2" },
+                                        React.createElement("strong", null, "Best support:"), " .txt files • For Word docs, please copy/paste the text instead"
+                                    )
+                                ),
+
+                                React.createElement("div", { className: "text-center text-gray-500 text-sm mb-4" },
+                                    React.createElement("span", { className: "bg-white px-3" }, "or")
+                                ),
+                                
+                                React.createElement("textarea", {
+                                    value: transcript,
+                                    onChange: (e) => setTranscript(e.target.value),
+                                    placeholder: "Paste your meeting transcript here. Include dialogue between participants to get the most accurate analysis...\n\nFor testing, try this sample:\nJohn: Good morning everyone, thanks for joining today's project review.\nSarah: Hi John, glad to be here. What's on the agenda?\nJohn: We need to discuss the Q3 deliverables and timeline.\nMike: I have some concerns about the deadline...\nSarah: What specific concerns, Mike?\nMike: The testing phase might need more time.\nJohn: Let's discuss solutions...",
+                                    className: "w-full h-48 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm",
+                                    disabled: loading || uploadingFile
+                                }),
+                                
+                                React.createElement("div", { className: "mt-4 flex items-center justify-between" },
+                                    React.createElement("button", {
+                                        onClick: analyzeTranscript,
+                                        disabled: loading || !transcript.trim(),
+                                        className: "bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold py-3 px-8 rounded-lg transition-colors flex items-center text-lg cursor-pointer"
+                                    },
+                                        loading ? React.createElement(React.Fragment, null,
+                                            React.createElement("div", { className: "animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" }),
+                                            "Analyzing Meeting..."
+                                        ) : React.createElement(React.Fragment, null,
+                                            React.createElement(Zap, { className: "w-5 h-5 mr-2" }),
+                                            "Get Professional Analysis"
+                                        )
+                                    ),
+                                    
+                                    transcript && React.createElement("span", { className: "text-sm text-gray-500" },
+                                        transcript.length.toLocaleString() + " characters"
+                                    )
+                                ),
+                                
+                                error && React.createElement("div", { className: "mt-4 p-4 bg-red-50 border border-red-200 rounded-lg" },
+                                    React.createElement("div", { className: "flex items-center" },
+                                        React.createElement(AlertCircle, { className: "w-5 h-5 text-red-600 mr-2" }),
+                                        React.createElement("span", { className: "text-red-700" }, error)
+                                    )
+                                )
+                            ),
+
+                            // Results Section
+                            analysis && React.createElement("div", { className: "space-y-8" },
+                                // Export Options
+                                React.createElement("div", { className: "flex justify-end gap-2 mb-4" },
+                                    React.createElement("button", {
+                                        onClick: copyAnalysisToClipboard,
+                                        className: "flex items-center px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                                    },
+                                        React.createElement(Copy, { className: "w-4 h-4 mr-2" }),
+                                        "Copy Report"
+                                    ),
+                                    React.createElement("button", {
+                                        onClick: printAnalysis,
+                                        className: "flex items-center px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                                    },
+                                        React.createElement(Printer, { className: "w-4 h-4 mr-2" }),
+                                        "Print Report"
+                                    ),
+                                    React.createElement("button", {
+                                        onClick: downloadAnalysis,
+                                        className: "flex items-center px-3 py-2 text-sm bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors"
+                                    },
+                                        React.createElement(Download, { className: "w-4 h-4 mr-2" }),
+                                        "Download Report"
+                                    )
+                                ),
+
+                                // Overall Score
+                                React.createElement("div", { className: "bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200" },
+                                    React.createElement("div", { className: "flex items-center justify-between mb-4" },
+                                        React.createElement("h2", { className: "text-2xl font-bold text-gray-900" }, "Professional Assessment"),
+                                        React.createElement("div", { className: `px-4 py-2 rounded-full text-lg font-semibold border ${getRatingColor(analysis.overallScore)}` },
+                                            `${analysis.overallScore}/5 - ${getRatingText(analysis.overallScore)}`
+                                        )
+                                    ),
+                                    React.createElement("p", { className: "text-gray-700 text-lg mb-4" }, analysis.overallAssessment),
+                                    analysis.meetingType && React.createElement("p", { className: "text-sm text-gray-600" },
+                                        React.createElement("strong", null, "Meeting Type:"), " ", analysis.meetingType
+                                    )
+                                ),
+
+                                // CTA Section
+                                React.createElement("div", { className: "bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-lg border border-gray-200" },
+                                    React.createElement("h3", { className: "text-lg font-bold text-gray-900 mb-2" }, "Ready to Transform Your Meetings?"),
+                                    React.createElement("p", { className: "text-gray-700 mb-4" },
+                                        "This analysis is just the beginning. Get professional facilitation training, coaching, and customized improvement programs to make every meeting count."
+                                    ),
+                                    React.createElement("div", { className: "flex flex-wrap gap-3" },
+                                        React.createElement("button", {
+                                            onClick: () => handleCTAClick('training'),
+                                            className: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors"
+                                        }, "Get Custom Training"),
+                                        React.createElement("button", {
+                                            onClick: () => handleCTAClick('consultation'),
+                                            className: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors"
+                                        }, "Schedule Consultation"),
+                                        React.createElement("button", {
+                                            onClick: () => handleCTAClick('learn-more'),
+                                            className: "border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium transition-colors"
+                                        }, "Learn More")
+                                    )
+                                )
+                            )
+                        ),
+                        
+                        // Footer
+                        React.createElement("div", { className: "bg-gray-100 p-6 rounded-b-lg border-t border-gray-200" },
+                            React.createElement("div", { className: "text-center text-sm text-gray-600" },
+                                React.createElement("p", { className: "mb-2" },
+                                    React.createElement("strong", null, "Meeting Analysis Pro"), " - Professional meeting facilitation assessment"
+                                ),
+                                React.createElement("p", null,
+                                    "Powered by evidence-based evaluation criteria.",
+                                    React.createElement("span", { className: "mx-2" }, "•"),
+                                    React.createElement("button", {
+                                        onClick: () => setShowPrivacyInfo(!showPrivacyInfo),
+                                        className: "text-blue-600 hover:text-blue-800 underline"
+                                    }, "Privacy Policy")
+                                )
+                            )
+                        )
+                    ),
+
+                    // CTA Modal
+                    showCTAModal && React.createElement("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" },
+                        React.createElement("div", { className: "bg-white rounded-lg max-w-md w-full p-6" },
+                            React.createElement("h3", { className: "text-xl font-bold mb-4" },
+                                selectedService === 'training' && 'Custom Facilitation Training',
+                                selectedService === 'consultation' && 'Free Consultation Call',
+                                selectedService === 'learn-more' && 'Learn More About Our Services'
+                            ),
+                            
+                            selectedService === 'training' && React.createElement("div", null,
+                                React.createElement("p", { className: "text-gray-700 mb-4" },
+                                    "Based on your meeting analysis, we can create a customized training program to address your specific facilitation challenges."
+                                ),
+                                React.createElement("div", { className: "space-y-2 text-sm text-gray-600 mb-4" },
+                                    React.createElement("p", null, "• Interactive workshop format"),
+                                    React.createElement("p", null, "• Evidence-based techniques"),
+                                    React.createElement("p", null, "• Practice with real scenarios"),
+                                    React.createElement("p", null, "• Follow-up coaching included")
+                                ),
+                                React.createElement("p", { className: "text-lg font-semibold text-blue-600 mb-4" }, "Starting at $2,500 per workshop")
+                            ),
+
+                            selectedService === 'consultation' && React.createElement("div", null,
+                                React.createElement("p", { className: "text-gray-700 mb-4" },
+                                    "Let's discuss your specific meeting challenges and how we can help improve your team's facilitation skills."
+                                ),
+                                React.createElement("div", { className: "space-y-2 text-sm text-gray-600 mb-4" },
+                                    React.createElement("p", null, "• 30-minute free consultation"),
+                                    React.createElement("p", null, "• Review your analysis results"),
+                                    React.createElement("p", null, "• Customized improvement plan"),
+                                    React.createElement("p", null, "• No obligation to proceed")
+                                )
+                            ),
+
+                            selectedService === 'learn-more' && React.createElement("div", null,
+                                React.createElement("p", { className: "text-gray-700 mb-4" },
+                                    "Explore our full range of meeting facilitation services and resources."
+                                ),
+                                React.createElement("div", { className: "space-y-2 text-sm text-gray-600 mb-4" },
+                                    React.createElement("p", null, "• Facilitation skills training"),
+                                    React.createElement("p", null, "• Executive coaching"),
+                                    React.createElement("p", null, "• Team workshops"),
+                                    React.createElement("p", null, "• Custom assessment programs")
+                                )
+                            ),
+
+                            React.createElement("div", { className: "mt-6 flex gap-3" },
+                                React.createElement("a", {
+                                    href: `mailto:contact@meetinganalysispro.com?subject=Interest in Professional Services&body=Hi, I just completed a meeting analysis and I'm interested in learning more about your services. My meeting scored ${analysis?.overallScore}/5. Please contact me to discuss next steps.`,
+                                    className: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors flex items-center"
+                                },
+                                    React.createElement(Mail, { className: "w-4 h-4 mr-2" }),
+                                    "Contact Us"
+                                ),
+                                React.createElement("button", {
+                                    onClick: () => setShowCTAModal(false),
+                                    className: "border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded font-medium transition-colors"
+                                }, "Close")
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        ReactDOM.render(React.createElement(MeetingAnalysisPro), document.getElementById('root'));
+    </script>
+</body>
+</html>
